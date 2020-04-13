@@ -1,13 +1,13 @@
 import "./App.css";
 
 import { Route, Switch } from "react-router-dom";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
 import Header from "./components/header/header.component";
 import HomePage from "./pages/homepage/homepage.component";
 import React from "react";
 import ShopPage from "./pages/shop/shop.component";
 import SignInUp from "./pages/sign-in-up/sign-in-up.component";
-import { auth } from "./firebase/firebase.utils";
 
 class App extends React.Component {
   constructor() {
@@ -19,24 +19,44 @@ class App extends React.Component {
   }
 
   // this is the handler given back from onAuthStateChanged
-  unsubscribeFromAuth = null
+  unsubscribeFromAuth = null;
 
   componentDidMount() {
     // detect user login or out
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({ currentUser: user });
-      console.log(user);
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot(snapShot => {
+          this.setState(
+            {
+              currentUser: {
+                id: snapShot.id,
+                ...snapShot.data()
+              }
+            },
+            // after set user, log out user object
+            // remember setState is async so we need to make the function as callback
+            // otherwise log will run before setState complete
+            () => {
+              console.log(this.state);
+            }
+          );
+        });
+      } else {
+        this.setState({ currentUser: userAuth });
+      }
     });
   }
 
   componentWillUnmount() {
-    this.unsubscribeFromAuth()
+    this.unsubscribeFromAuth();
   }
 
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser}/>
+        <Header currentUser={this.state.currentUser} />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
