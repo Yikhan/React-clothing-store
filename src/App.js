@@ -15,12 +15,12 @@ import { selectCurrentUser } from './redux/user/user.selectors';
 import { setCurrentUser } from './redux/user/user.actions';
 
 class App extends React.Component {
-	// this is the handler given back from onAuthStateChanged
+	// * this is the handler given back from onAuthStateChanged
 	unsubscribeFromAuth = null;
 
 	componentDidMount() {
 		const { setCurrentUser } = this.props;
-		// detect user login or out
+		// * detect user login or out
 		this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
 			if (userAuth) {
 				const userRef = await createUserProfileDocument(userAuth);
@@ -60,7 +60,7 @@ class App extends React.Component {
 	}
 }
 
-// * createStructuredSelector会自动引入root state作为参数
+// * ANCHOR createStructuredSelector会自动引入root state作为参数
 const mapStateToProps = createStructuredSelector({
 	currentUser: selectCurrentUser
 });
