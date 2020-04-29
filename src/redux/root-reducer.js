@@ -1,21 +1,22 @@
 import cartReducer from './cart/cart.reducer';
 import { combineReducers } from 'redux';
+import directoryReducer from './directory/directory.reducer';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './user/user.reducer';
 
 //* NOTE user被firebase管理了，不需要本地持久化储存
 const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist: ['cart']
-}
+	key: 'root',
+	storage,
+	whitelist: [ 'cart' ]
+};
 
 const rootReducer = combineReducers({
 	user: userReducer,
-	cart: cartReducer
+	cart: cartReducer,
+	directory: directoryReducer
 });
 
 //* NOTE 持久化储存redux数据
 export default persistReducer(persistConfig, rootReducer);
-// export default rootReducer;
