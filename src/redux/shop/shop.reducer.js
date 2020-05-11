@@ -1,8 +1,7 @@
 import {ShopActionTypes} from './shop.types'
-import Shop_Data from './shop.data';
 
 const Initial_State = {
-	collections: Shop_Data
+	collections: null
 };
 
 const shopReducer = (state = Initial_State, action) => {
