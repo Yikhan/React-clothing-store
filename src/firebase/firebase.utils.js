@@ -16,9 +16,6 @@ const config = {
 
 firebase.initializeApp(config);
 
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
-
 export const createUserProfileDocument = async (userAuth, additionalData) => {
 	if (!userAuth) return;
 
@@ -79,5 +76,11 @@ export const convertCollectionsSnapshotToMap = (collections) => {
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+
+//* 如果需要返回的ref对象，就使用provider，在外面再调用auth.signInWithPopup
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+//* 可以直接使用google注册
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 export default firebase;
