@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCollectionsForOverview } from './redux/shop/shop.selectors';
 import { selectCurrentUser } from './redux/user/user.selectors';
-import { setCurrentUser } from './redux/user/user.actions';
 
 class App extends React.Component {
 	// * this is the handler given back from onAuthStateChanged
@@ -43,8 +42,4 @@ const mapStateToProps = createStructuredSelector({
 	collectionsArray: selectCollectionsForOverview
 });
 
-const mapDispatchToProps = (dispatch) => ({
-	setCurrentUser: (user) => dispatch(setCurrentUser(user))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, null)(App);
