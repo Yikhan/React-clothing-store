@@ -12,10 +12,13 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCollectionsForOverview } from './redux/shop/shop.selectors';
 import { selectCurrentUser } from './redux/user/user.selectors';
+import { checkUserSession } from './redux/user/user.actions';
 
 class App extends React.Component {
-	// * this is the handler given back from onAuthStateChanged
-	unsubscribeFromAuth = null;
+	componentDidMount() {
+		const { checkUserSession } = this.props;
+		checkUserSession();
+	}
 
 	render() {
 		return (
@@ -42,4 +45,8 @@ const mapStateToProps = createStructuredSelector({
 	collectionsArray: selectCollectionsForOverview
 });
 
-export default connect(mapStateToProps, null)(App);
+const mapDispatchToProps = (dispatch) => ({
+	checkUserSession: () => dispatch(checkUserSession())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

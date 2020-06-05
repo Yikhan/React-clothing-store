@@ -2,6 +2,7 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 import firebase from 'firebase/app';
+import { Promise } from 'q';
 
 const config = {
 	apiKey: 'AIzaSyAwleexWMVvIg7ytCBdehHJESQV-vyicCk',
@@ -15,6 +16,9 @@ const config = {
 };
 
 firebase.initializeApp(config);
+
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
 	if (!userAuth) return;
@@ -74,8 +78,15 @@ export const convertCollectionsSnapshotToMap = (collections) => {
 	}, {});
 };
 
-export const auth = firebase.auth();
-export const firestore = firebase.firestore();
+//* 为了在Saga里面取到User，这里模拟了一般情况下获得User的过程，仍然需要使用onAuthStateChange
+export const getCurrentUser = () => {
+	return new Promise((resolve, reject) => {
+		const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+			unsubscribe();
+			resolve(userAuth);
+		}, reject);
+	});
+};
 
 //* 如果需要返回的ref对象，就使用provider，在外面再调用auth.signInWithPopup
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
