@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { convertCollectionsSnapshotToMap, firestore } from '../../firebase/firebase.utils';
 import { fetchCollectionsFailure, fetchCollectionsSuccess } from './shop.actions';
 
@@ -12,8 +12,8 @@ export function* fetchCollectionsAsync() {
 		const snapshot = yield collectionRef.get();
 		//* 使用call来让Saga控制函数调用，方便取消
 		const collectionsMap = yield call(convertCollectionsSnapshotToMap, snapshot);
-    //* 使用put来发送action给reducer，相当于dispatch
-    yield put(fetchCollectionsSuccess(collectionsMap));
+		//* 使用put来发送action给reducer，相当于dispatch
+		yield put(fetchCollectionsSuccess(collectionsMap));
 	} catch (error) {
 		yield put(fetchCollectionsFailure(error.message));
 	}
@@ -21,4 +21,8 @@ export function* fetchCollectionsAsync() {
 
 export function* fetchCollectionsStart() {
 	yield takeLatest(ShopActionTypes.FETCH_COLLECTION_START, fetchCollectionsAsync);
+}
+
+export function* shopSagas() {
+	yield all([ call(fetchCollectionsStart) ]);
 }
