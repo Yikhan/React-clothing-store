@@ -1,8 +1,8 @@
 import 'firebase/firestore';
 import 'firebase/auth';
 
-import firebase from 'firebase/app';
 import { Promise } from 'q';
+import firebase from 'firebase/app';
 
 const config = {
 	apiKey: 'AIzaSyAwleexWMVvIg7ytCBdehHJESQV-vyicCk',
@@ -28,6 +28,8 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 	const snapShot = await userRef.get();
 	//* create new user if not exits
 	if (!snapShot.exists) {
+		//* 从firebase返回的user里有一个displayName属性，但这个与我们注册时自定义的displayName不是一个东西
+		//* 我们可以把它覆盖掉（把注册的displayName放在additionlData里面）
 		const { displayName, email } = userAuth;
 		const createdAt = new Date();
 		try {
